@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:heady_sat/common/data_provder.dart';
+import 'package:heady_sat/models/items.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -7,6 +9,21 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   PageType _currentPage = PageType.values[0];
+  ItemOut items;
+
+  @override
+  void initState() {
+    super.initState();
+    _loadData();
+  }
+
+  _loadData() async {
+    DataOut<ItemOut> out = await DataProvider.getAllItems(context);
+    if (out.isSuccess) {
+      items = out.data;
+      setState(() {});
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,9 +31,17 @@ class _HomePageState extends State<HomePage> {
       appBar: AppBar(
         title: Text('Home Page'),
       ),
-      body: Center(
-        child: Text('data'),
-      ),
+      body: items == null
+          ? Center(
+              child: Text('Loading'),
+            )
+          : SingleChildScrollView(
+              child: Column(
+                  children: List.generate(
+                      items.categories.length,
+                      (index) =>
+                          ListTile(title: Text(items.categories[index].name)))),
+            ),
       bottomNavigationBar: BottomNavigationBar(
         items: _buildBottomItems(),
         currentIndex: _currentPage.index,
