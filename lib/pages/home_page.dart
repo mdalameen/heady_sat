@@ -1,5 +1,9 @@
 import 'package:flutter/material.dart';
-import 'package:heady_sat/common/data_provder.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:heady_sat/blocs/data_event.dart';
+import 'package:heady_sat/blocs/data_state.dart';
+import 'package:heady_sat/blocs/item_bloc.dart';
+import 'package:heady_sat/common/app_widgets.dart';
 import 'package:heady_sat/models/items.dart';
 
 class HomePage extends StatefulWidget {
@@ -9,50 +13,57 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   PageType _currentPage = PageType.values[0];
-  ItemOut items;
 
   @override
   void initState() {
     super.initState();
-    _loadData();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      _loadData();
+    });
   }
 
   _loadData() async {
-    DataOut<ItemOut> out = await DataProvider.getAllItems(context);
-    if (out.isSuccess) {
-      items = out.data;
-      setState(() {});
-    }
+    BlocProvider.of<ItemBloc>(context).add(LoadDataEvent());
   }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        title: Text('Home Page'),
-      ),
-      body: items == null
-          ? Center(
-              child: Text('Loading'),
-            )
-          : SingleChildScrollView(
+    return _buildItemPage();
+  }
+
+  Widget _buildItemPage() {
+    return BlocConsumer<ItemBloc, DataState<ItemOut>>(
+        builder: (_, state) {
+          if (state is DataLoadingState || state is DataNotFetched)
+            return AppWidget.getLoadingPage('Items');
+          if (state is DataErrorState)
+            return AppWidget.getErrorPage(
+                'Items', (state as DataErrorState).errorMessage, _loadData);
+          ItemOut out = (state as DataCachedState).data;
+          return Scaffold(
+            appBar: AppBar(
+              title: Text('Home Page'),
+            ),
+            body: SingleChildScrollView(
               child: Column(
                   children: List.generate(
-                      items.categories.length,
+                      out?.categories?.length ?? 0,
                       (index) =>
-                          ListTile(title: Text(items.categories[index].name)))),
+                          ListTile(title: Text(out.categories[index].name)))),
             ),
-      bottomNavigationBar: BottomNavigationBar(
-        items: _buildBottomItems(),
-        currentIndex: _currentPage.index,
-        onTap: _onPageSelected,
-        type: BottomNavigationBarType.fixed,
-        selectedItemColor: Colors.black,
-        unselectedItemColor: Colors.yellow,
-        selectedFontSize: 12,
-        unselectedFontSize: 12,
-      ),
-    );
+            bottomNavigationBar: BottomNavigationBar(
+              items: _buildBottomItems(),
+              currentIndex: _currentPage.index,
+              onTap: _onPageSelected,
+              type: BottomNavigationBarType.fixed,
+              selectedItemColor: Colors.black,
+              unselectedItemColor: Colors.yellow,
+              selectedFontSize: 12,
+              unselectedFontSize: 12,
+            ),
+          );
+        },
+        listener: (_, item) {});
   }
 
   _onPageSelected(int index) {
