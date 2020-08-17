@@ -44,11 +44,6 @@ class RankingScreen extends StatelessWidget {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // Image.network(
-                          //   'https://picsum.photos/id/${rp.product.id}/200?blur=5',
-                          //   width: 100,
-                          //   height: 100,
-                          // ),
                           Icon(
                             Icons.bubble_chart,
                             color: Colors.grey,

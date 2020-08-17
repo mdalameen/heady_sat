@@ -1,13 +1,14 @@
 import 'package:flutter/material.dart';
 
 class AppWidget {
-  static Widget getSliverAppBar(String title) {
+  static Widget getSliverAppBar(String title, {Widget bottomWidget}) {
     return SliverAppBar(
       snap: true,
       primary: true,
       pinned: true,
       floating: true,
       title: Text(title),
+      bottom: bottomWidget,
     );
   }
 

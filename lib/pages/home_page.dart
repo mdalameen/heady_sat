@@ -5,6 +5,7 @@ import 'package:heady_sat/blocs/data_state.dart';
 import 'package:heady_sat/blocs/item_bloc.dart';
 import 'package:heady_sat/common/app_widgets.dart';
 import 'package:heady_sat/models/items.dart';
+import 'package:heady_sat/pages/components/category_screen.dart';
 import 'package:heady_sat/pages/components/ranking_screen.dart';
 
 class HomePage extends StatefulWidget {
@@ -48,7 +49,10 @@ class _HomePageState extends State<HomePage> {
   }
 
   _buildCurrentScreen(ItemOut data) {
-    return RankingScreen(data);
+    if (_currentPage == PageType.ranking)
+      return RankingScreen(data);
+    else
+      return CategoryScreen(data);
     // switch (_currentPage) {
     //   case PageType.ranking:
     //     return RankingScreen(data);

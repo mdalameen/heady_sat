@@ -5,10 +5,22 @@ class Variant {
   String color;
   int size;
   double price;
+  Color colorData;
+  static const Map<String, Color> _colorConstants = {
+    'Blue': Colors.blue,
+    'Red': Colors.red,
+    'White': Colors.white,
+    'Yellow': Colors.yellow,
+    'Light Blue': Colors.lightBlue,
+    'Golden': Colors.amber,
+    'Silver': Colors.grey,
+    'Green': Colors.green
+  };
 
   Variant.fromJson(Map<String, dynamic> map)
       : variantId = map['id'],
         color = map['color'],
+        colorData = _colorConstants[map['color']] ?? Colors.black,
         size = map['size'],
         price = _getDouble(map['price']);
 
