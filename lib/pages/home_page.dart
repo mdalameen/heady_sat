@@ -5,6 +5,7 @@ import 'package:heady_sat/blocs/data_state.dart';
 import 'package:heady_sat/blocs/item_bloc.dart';
 import 'package:heady_sat/common/app_widgets.dart';
 import 'package:heady_sat/models/items.dart';
+import 'package:heady_sat/pages/components/ranking_screen.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -39,9 +40,7 @@ class _HomePageState extends State<HomePage> {
 
           return Scaffold(
             backgroundColor: Colors.white,
-            body: CustomScrollView(
-              slivers: _buildCurrentScreen(out),
-            ),
+            body: _buildCurrentScreen(out),
             bottomNavigationBar: _buildBottomNavigationBar(),
           );
         },
@@ -49,21 +48,22 @@ class _HomePageState extends State<HomePage> {
   }
 
   _buildCurrentScreen(ItemOut data) {
-    switch (_currentPage) {
-      case PageType.ranking:
-        return [AppWidget.getSliverAppBar('Ranking'), _getRankingView(data)];
-      default:
-        return [
-          SliverAppBar(
-            title: Text('default'),
-          ),
-          SliverToBoxAdapter(
-            child: Center(
-              child: Text('pending'),
-            ),
-          )
-        ];
-    }
+    return RankingScreen(data);
+    // switch (_currentPage) {
+    //   case PageType.ranking:
+    //     return RankingScreen(data);
+    //   default:
+    //     return [
+    //       SliverAppBar(
+    //         title: Text('default'),
+    //       ),
+    //       SliverToBoxAdapter(
+    //         child: Center(
+    //           child: Text('pending'),
+    //         ),
+    //       )
+    //     ];
+    // }
   }
 
   Widget _getRankingView(ItemOut data) {

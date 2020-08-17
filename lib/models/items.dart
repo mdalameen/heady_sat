@@ -122,14 +122,16 @@ class RankingProduct {
   static const String _labelShare = 'Shares';
   static const IconData _iconShare = Icons.share;
 
-  int id;
+  Product product;
   int count;
   String countLabel;
   IconData countIcon;
   String _countKey;
 
-  RankingProduct.fromJson(Map<String, dynamic> map) {
-    id = map['id'];
+  RankingProduct.fromJson(
+      Map<String, dynamic> map, Map<int, Product> allProducts) {
+    int id = map['id'];
+    product = allProducts[id];
 
     if (map.keys.contains(_keyView)) {
       count = map[_keyView];
@@ -149,13 +151,14 @@ class RankingProduct {
     }
   }
 
-  Map<String, dynamic> toJson() => {'id': id, _countKey: count};
+  Map<String, dynamic> toJson() => {'id': product.id, _countKey: count};
 
-  static List<RankingProduct> getList(List dList) {
+  static List<RankingProduct> getList(
+      List dList, Map<int, Product> allProducts) {
     List<RankingProduct> list = List();
     if (dList != null)
       for (Map<String, dynamic> map in dList)
-        list.add(RankingProduct.fromJson(map));
+        list.add(RankingProduct.fromJson(map, allProducts));
     return list;
   }
 
@@ -171,19 +174,28 @@ class Ranking {
   String ranking;
   List<RankingProduct> rankingProducts;
 
-  Ranking.fromJson(Map<String, dynamic> map)
+  Ranking.fromJson(Map<String, dynamic> map, Map<int, Product> allProducts)
       : ranking = map['ranking'],
-        rankingProducts = RankingProduct.getList(map['products']);
+        rankingProducts = RankingProduct.getList(map['products'], allProducts);
 
   Map<String, dynamic> toJson() => {
         'ranking': ranking,
         'products': RankingProduct.getJsonList(rankingProducts)
       };
 
-  static List<Ranking> getList(List dList) {
+  static List<Ranking> getList(List dList, List<Category> cats) {
     List<Ranking> list = List();
-    if (dList != null)
-      for (Map<String, dynamic> map in dList) list.add(Ranking.fromJson(map));
+    if (dList != null) {
+      Map<int, Product> allProducts = Map();
+      for (Category c in cats) {
+        for (Product p in c.products) {
+          allProducts[p.id] = p;
+        }
+      }
+      for (Map<String, dynamic> map in dList)
+        list.add(Ranking.fromJson(map, allProducts));
+    }
+
     return list;
   }
 
@@ -198,9 +210,10 @@ class ItemOut {
   List<Category> categories;
   List<Ranking> rankings;
 
-  ItemOut.fromJson(Map<String, dynamic> map)
-      : categories = Category.getList(map['categories']),
-        rankings = Ranking.getList(map['rankings']);
+  ItemOut.fromJson(Map<String, dynamic> map) {
+    categories = Category.getList(map['categories']);
+    rankings = Ranking.getList(map['rankings'], categories);
+  }
 
   Map<String, dynamic> toJson() => {
         'categories': Category.getJsonList(categories),
