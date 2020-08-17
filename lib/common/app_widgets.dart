@@ -1,6 +1,16 @@
 import 'package:flutter/material.dart';
 
 class AppWidget {
+  static Widget getSliverAppBar(String title) {
+    return SliverAppBar(
+      snap: true,
+      primary: true,
+      pinned: true,
+      floating: true,
+      title: Text(title),
+    );
+  }
+
   static Widget getLoadingPage(String title) {
     return Scaffold(
       appBar: AppBar(

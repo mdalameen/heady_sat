@@ -28,10 +28,6 @@ class _HomePageState extends State<HomePage> {
 
   @override
   Widget build(BuildContext context) {
-    return _buildItemPage();
-  }
-
-  Widget _buildItemPage() {
     return BlocConsumer<ItemBloc, DataState<ItemOut>>(
         builder: (_, state) {
           if (state is DataLoadingState || state is DataNotFetched)
@@ -40,30 +36,42 @@ class _HomePageState extends State<HomePage> {
             return AppWidget.getErrorPage(
                 'Items', (state as DataErrorState).errorMessage, _loadData);
           ItemOut out = (state as DataCachedState).data;
+
           return Scaffold(
-            appBar: AppBar(
-              title: Text('Home Page'),
+            backgroundColor: Colors.white,
+            body: CustomScrollView(
+              slivers: _buildCurrentScreen(out),
             ),
-            body: SingleChildScrollView(
-              child: Column(
-                  children: List.generate(
-                      out?.categories?.length ?? 0,
-                      (index) =>
-                          ListTile(title: Text(out.categories[index].name)))),
-            ),
-            bottomNavigationBar: BottomNavigationBar(
-              items: _buildBottomItems(),
-              currentIndex: _currentPage.index,
-              onTap: _onPageSelected,
-              type: BottomNavigationBarType.fixed,
-              selectedItemColor: Colors.black,
-              unselectedItemColor: Colors.yellow,
-              selectedFontSize: 12,
-              unselectedFontSize: 12,
-            ),
+            bottomNavigationBar: _buildBottomNavigationBar(),
           );
         },
         listener: (_, item) {});
+  }
+
+  _buildCurrentScreen(ItemOut data) {
+    switch (_currentPage) {
+      case PageType.ranking:
+        return [AppWidget.getSliverAppBar('Ranking'), _getRankingView(data)];
+      default:
+        return [
+          SliverAppBar(
+            title: Text('default'),
+          ),
+          SliverToBoxAdapter(
+            child: Center(
+              child: Text('pending'),
+            ),
+          )
+        ];
+    }
+  }
+
+  Widget _getRankingView(ItemOut data) {
+    return SliverToBoxAdapter(
+      child: Column(
+          children: List.generate(data?.categories?.length ?? 0,
+              (index) => ListTile(title: Text(data.categories[index].name)))),
+    );
   }
 
   _onPageSelected(int index) {
@@ -71,7 +79,7 @@ class _HomePageState extends State<HomePage> {
     setState(() {});
   }
 
-  List<BottomNavigationBarItem> _buildBottomItems() {
+  Widget _buildBottomNavigationBar() {
     var icons = <IconData>[
       Icons.trending_up,
       Icons.category,
@@ -79,16 +87,25 @@ class _HomePageState extends State<HomePage> {
       Icons.more_horiz
     ];
     var labels = <String>['Ranking', 'Categories', 'Cart', 'More'];
-    return List.generate(
-        4,
-        (index) => BottomNavigationBarItem(
-            icon: Icon(icons[index],
-                color:
-                    index == _currentPage.index ? Colors.black : Colors.grey),
-            title: Text(
-              labels[index],
-              style: TextStyle(color: Colors.black),
-            )));
+    return BottomNavigationBar(
+      items: List.generate(
+          4,
+          (index) => BottomNavigationBarItem(
+              icon: Icon(icons[index],
+                  color:
+                      index == _currentPage.index ? Colors.black : Colors.grey),
+              title: Text(
+                labels[index],
+                style: TextStyle(color: Colors.black),
+              ))),
+      currentIndex: _currentPage.index,
+      onTap: _onPageSelected,
+      type: BottomNavigationBarType.fixed,
+      selectedItemColor: Colors.black,
+      unselectedItemColor: Colors.yellow,
+      selectedFontSize: 12,
+      unselectedFontSize: 12,
+    );
   }
 }
 
