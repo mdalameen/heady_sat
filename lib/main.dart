@@ -17,6 +17,7 @@ class MyApp extends StatelessWidget {
       child: MultiBlocProvider(
           providers: AllBlocs.get(),
           child: MaterialApp(
+            debugShowCheckedModeBanner: false,
             title: 'Heady SAT',
             theme: ThemeData(
               primarySwatch: Colors.blueGrey,
