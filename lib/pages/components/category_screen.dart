@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:heady_sat/common/app_constants.dart';
 import 'package:heady_sat/common/app_widgets.dart';
 import 'package:heady_sat/common/category_processor.dart';
 import 'package:heady_sat/models/items.dart';
@@ -19,7 +18,14 @@ class _CategoryScreenState extends State<CategoryScreen> {
   @override
   void initState() {
     super.initState();
+    _initProducts();
+  }
+
+  _initProducts() async {
+    print('initProducts');
     products.addAll(CategoryProcessor().getProducts());
+    print(products);
+    if (mounted) setState(() {});
   }
 
   @override
@@ -48,8 +54,6 @@ class _CategoryScreenState extends State<CategoryScreen> {
         if (index == 0) {
           isSelected = CategoryProcessor().getSelectedCategory().isEmpty;
         } else {
-          print(CategoryProcessor().getSelectedCategory());
-          print(widget.data.categories[index - 1]);
           isSelected = CategoryProcessor()
               .getSelectedCategory()
               .contains(widget.data.categories[index - 1].id);

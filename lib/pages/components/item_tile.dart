@@ -34,7 +34,9 @@ class ItemTile extends StatelessWidget {
 
     return InkWell(
       onTap: () => showModalBottomSheet(
-          context: context, builder: (_) => ItemSheet(product)),
+          context: context,
+          builder: (_) => ItemSheet(product),
+          isScrollControlled: true),
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(

@@ -1,8 +1,11 @@
 import 'package:flutter/material.dart';
+
 import 'package:heady_sat/common/app_constants.dart';
 import 'package:heady_sat/common/app_style.dart';
+import 'package:heady_sat/models/carts.dart';
 import 'package:heady_sat/models/items.dart';
 import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
 
 class ItemSheet extends StatelessWidget {
   static DateFormat _formatter = DateFormat('dd/MM/yyyy');
@@ -11,7 +14,6 @@ class ItemSheet extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return Text('data');
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
@@ -58,7 +60,14 @@ class VariantView extends StatelessWidget {
   VariantView(this.product, this.variant);
   @override
   Widget build(BuildContext context) {
-    // return Text('Variant');
+    List<CartItem> list = Provider.of<Cart>(context, listen: true).items;
+    int count = 0;
+    for (CartItem item in list)
+      if (item.productId == product.id && item.variantId == variant.variantId) {
+        count = item.quantity;
+        break;
+      }
+
     return Container(
       padding: EdgeInsets.all(10),
       decoration: BoxDecoration(
@@ -92,11 +101,64 @@ class VariantView extends StatelessWidget {
           Row(
             mainAxisAlignment: MainAxisAlignment.end,
             children: [
-              Container(
-                decoration: BoxDecoration(
-                    color: Colors.blue, borderRadius: BorderRadius.circular(5)),
-                child: Text('Add'),
-              )
+              if (count == 0)
+                InkWell(
+                    onTap: () => Provider.of<Cart>(context, listen: false)
+                        .add(product.id, variant.variantId),
+                    child: Container(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 10, vertical: 3.5),
+                      decoration: BoxDecoration(
+                          color: Colors.blue,
+                          borderRadius: BorderRadius.circular(5)),
+                      child: Text('Add', style: TextStyle(color: Colors.white)),
+                    )),
+              if (count != 0)
+                Row(
+                  children: [
+                    InkWell(
+                      onTap: () => Provider.of<Cart>(context, listen: false)
+                          .remove(product.id, variant.variantId),
+                      child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Icon(
+                            Icons.remove,
+                            color: Colors.white,
+                          )),
+                    ),
+                    SizedBox(
+                      width: 30,
+                      child: Text(
+                        count.toString(),
+                        textAlign: TextAlign.center,
+                      ),
+                    ),
+                    InkWell(
+                      onTap: () => Provider.of<Cart>(context, listen: false)
+                          .add(product.id, variant.variantId),
+                      child: Container(
+                          decoration: BoxDecoration(
+                              color: Colors.blue,
+                              borderRadius: BorderRadius.circular(5)),
+                          child: Icon(
+                            Icons.add,
+                            color: Colors.white,
+                          )),
+                    )
+                  ],
+                )
+              // BlocListener<CartBloc, DataState<List<CartItem>>>(
+              //     child: InkWell(
+              //       onTap: () => BlocProvider.of<CartBloc>(context)
+              //           .add(CartAddEvent(product.id, variant.variantId)),
+              //       child: Text('data'),
+              //     ),
+              //     listener: (_, state) {
+              //       print('listened');
+              //       return Text(state.toString());
+              //     }),
             ],
           )
         ],

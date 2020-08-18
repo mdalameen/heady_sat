@@ -19,6 +19,7 @@ class ItemBloc extends Bloc<DataEvent, DataState<ItemOut>> {
       ItemOut cOut = await AppPreferences.getCachedItem();
 
       if (cOut != null) {
+        CategoryProcessor().setData(cOut);
         yield DataCachedState(cOut);
       }
       var itemOut = await DataProvider.getAllItems(context);

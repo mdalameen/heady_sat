@@ -7,7 +7,7 @@ class AllBlocs {
     return [
       BlocProvider<ItemBloc>(
         create: (_) => ItemBloc(_),
-      ),
+      )
     ];
   }
 }

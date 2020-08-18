@@ -4,9 +4,11 @@ import 'package:heady_sat/blocs/data_event.dart';
 import 'package:heady_sat/blocs/data_state.dart';
 import 'package:heady_sat/blocs/item_bloc.dart';
 import 'package:heady_sat/common/app_widgets.dart';
+import 'package:heady_sat/models/carts.dart';
 import 'package:heady_sat/models/items.dart';
 import 'package:heady_sat/pages/components/category_screen.dart';
 import 'package:heady_sat/pages/components/ranking_screen.dart';
+import 'package:provider/provider.dart';
 
 class HomePage extends StatefulWidget {
   @override
@@ -26,6 +28,7 @@ class _HomePageState extends State<HomePage> {
 
   _loadData() async {
     BlocProvider.of<ItemBloc>(context).add(LoadDataEvent());
+    Provider.of<Cart>(context, listen: false).init();
   }
 
   @override
@@ -53,29 +56,6 @@ class _HomePageState extends State<HomePage> {
       return RankingScreen(data);
     else
       return CategoryScreen(data);
-    // switch (_currentPage) {
-    //   case PageType.ranking:
-    //     return RankingScreen(data);
-    //   default:
-    //     return [
-    //       SliverAppBar(
-    //         title: Text('default'),
-    //       ),
-    //       SliverToBoxAdapter(
-    //         child: Center(
-    //           child: Text('pending'),
-    //         ),
-    //       )
-    //     ];
-    // }
-  }
-
-  Widget _getRankingView(ItemOut data) {
-    return SliverToBoxAdapter(
-      child: Column(
-          children: List.generate(data?.categories?.length ?? 0,
-              (index) => ListTile(title: Text(data.categories[index].name)))),
-    );
   }
 
   _onPageSelected(int index) {
