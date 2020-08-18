@@ -6,7 +6,7 @@ import 'package:heady_sat/pages/components/item_tile.dart';
 
 class CategoryScreen extends StatefulWidget {
   final ItemOut data;
-  CategoryScreen(this.data);
+  CategoryScreen(this.data, GlobalKey key) : super(key: key);
 
   @override
   _CategoryScreenState createState() => _CategoryScreenState();

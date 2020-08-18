@@ -7,7 +7,7 @@ import 'package:heady_sat/pages/components/item_tile.dart';
 
 class RankingScreen extends StatefulWidget {
   final ItemOut data;
-  RankingScreen(this.data);
+  RankingScreen(this.data, GlobalKey key) : super(key: key);
 
   @override
   _RankingScreenState createState() => _RankingScreenState();

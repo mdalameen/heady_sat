@@ -9,6 +9,7 @@ import 'package:heady_sat/pages/components/item_sheet.dart';
 import 'package:provider/provider.dart';
 
 class CartScreen extends StatelessWidget {
+  CartScreen(GlobalKey key) : super(key: key);
   @override
   Widget build(BuildContext context) {
     List<CartItem> list = Provider.of<Cart>(context, listen: true).items;

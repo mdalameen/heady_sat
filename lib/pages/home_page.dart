@@ -1,3 +1,4 @@
+import 'package:bottom_bar_page_transition/bottom_bar_page_transition.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:heady_sat/blocs/data_event.dart';
@@ -18,6 +19,8 @@ class HomePage extends StatefulWidget {
 
 class _HomePageState extends State<HomePage> {
   PageType _currentPage = PageType.values[0];
+  List<GlobalKey> _keys =
+      List.generate(PageType.values.length, (index) => GlobalKey());
 
   @override
   void initState() {
@@ -45,20 +48,26 @@ class _HomePageState extends State<HomePage> {
 
           return Scaffold(
             backgroundColor: Colors.white,
-            body: _buildCurrentScreen(out),
+            body: BottomBarPageTransition(
+              transitionType: TransitionType.slide,
+              builder: (_, i) => _buildCurrentScreen(out, i),
+              currentIndex: _currentPage.index,
+              totalLength: PageType.values.length,
+            ),
             bottomNavigationBar: _buildBottomNavigationBar(),
           );
         },
         listener: (_, item) {});
   }
 
-  _buildCurrentScreen(ItemOut data) {
-    if (_currentPage == PageType.ranking)
-      return RankingScreen(data);
-    else if (_currentPage == PageType.category)
-      return CategoryScreen(data);
+  _buildCurrentScreen(ItemOut data, int index) {
+    PageType currentPage = PageType.values[index];
+    if (currentPage == PageType.ranking)
+      return RankingScreen(data, _keys[index]);
+    else if (currentPage == PageType.category)
+      return CategoryScreen(data, _keys[index]);
     else
-      return CartScreen();
+      return CartScreen(_keys[index]);
   }
 
   _onPageSelected(int index) {
