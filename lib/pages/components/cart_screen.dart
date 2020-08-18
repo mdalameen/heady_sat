@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:heady_sat/common/app_constants.dart';
 import 'package:heady_sat/common/app_style.dart';
 import 'package:heady_sat/common/app_widgets.dart';
 import 'package:heady_sat/common/category_processor.dart';
@@ -14,6 +15,9 @@ class CartScreen extends StatelessWidget {
     List<_CartDisplayItem> displayList = List();
     Map<Product, _CartDisplayItem> items = Map();
     Map<int, Product> productMap = CategoryProcessor().getProductMap();
+    double subTotal = 0;
+    double tax = 0;
+
     for (CartItem item in list) {
       Product p = productMap[item.productId];
       Variant v;
@@ -22,6 +26,9 @@ class CartScreen extends StatelessWidget {
           v = tv;
           break;
         }
+
+      subTotal += v.price * item.quantity;
+      tax += (v.price / 100 * p.tax.value) * item.quantity;
 
       if (items.containsKey(p))
         items[p].selectedVariants.add(v);
@@ -50,6 +57,8 @@ class CartScreen extends StatelessWidget {
         if (displayList.isNotEmpty)
           SliverList(
             delegate: SliverChildBuilderDelegate((_, i) {
+              if (i == displayList.length)
+                return _buildPriceWidget(subTotal, tax);
               return Container(
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
@@ -78,9 +87,60 @@ class CartScreen extends StatelessWidget {
                   ],
                 ),
               );
-            }, childCount: displayList.length),
+            }, childCount: displayList.length + 1),
           )
       ],
+    );
+  }
+
+  _buildPriceWidget(double subTotal, double tax) {
+    var getRow = (String label, String value, [bool isBold = false]) {
+      TextStyle style = TextStyle(
+          color: isBold ? Colors.black : Colors.grey.shade700, fontSize: 16);
+      return Container(
+        padding: EdgeInsets.symmetric(vertical: 2),
+        child: Row(
+          children: [
+            Text(
+              label,
+              style: style,
+            ),
+            Expanded(
+              child: Text(
+                value,
+                textAlign: TextAlign.right,
+                style: style,
+              ),
+            )
+          ],
+        ),
+      );
+    };
+    return Container(
+      padding: EdgeInsets.all(10),
+      child: Column(
+        children: [
+          getRow('Sub Total',
+              AppContants.rupeeSymbol + subTotal.toStringAsFixed(2)),
+          getRow('Tax', AppContants.rupeeSymbol + tax.toStringAsFixed(2)),
+          getRow(
+              'Total',
+              AppContants.rupeeSymbol + (tax + subTotal).toStringAsFixed(2),
+              true),
+          Align(
+            alignment: Alignment.center,
+            child: InkWell(
+                onTap: null,
+                child: Container(
+                  padding: EdgeInsets.all(10),
+                  decoration: BoxDecoration(
+                      color: Colors.grey.shade300,
+                      borderRadius: BorderRadius.circular(3)),
+                  child: Text('Proceed'),
+                )),
+          )
+        ],
+      ),
     );
   }
 

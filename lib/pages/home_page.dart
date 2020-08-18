@@ -74,17 +74,54 @@ class _HomePageState extends State<HomePage> {
       Icons.more_horiz
     ];
     var labels = <String>['Ranking', 'Categories', 'Cart', 'More'];
+    List<CartItem> list = Provider.of<Cart>(context, listen: true).items;
+
     return BottomNavigationBar(
       items: List.generate(
           4,
           (index) => BottomNavigationBarItem(
-              icon: Icon(icons[index],
-                  color:
-                      index == _currentPage.index ? Colors.black : Colors.grey),
-              title: Text(
-                labels[index],
-                style: TextStyle(color: Colors.black),
-              ))),
+              icon: SizedBox(
+                width: 80,
+                height: 45,
+                child: Stack(
+                  children: [
+                    SizedBox(
+                      height: 45,
+                      width: 80,
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        // crossAxisAlignment: CrossAx,
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(icons[index],
+                              color: index == _currentPage.index
+                                  ? Colors.black
+                                  : Colors.grey),
+                          Text(
+                            labels[index],
+                            style: TextStyle(color: Colors.black),
+                          )
+                        ],
+                      ),
+                    ),
+                    if (list.isNotEmpty && index == 2)
+                      Align(
+                        alignment: Alignment.topRight,
+                        child: Container(
+                            padding: EdgeInsets.all(4),
+                            margin: EdgeInsets.only(right: 25),
+                            decoration: BoxDecoration(
+                                shape: BoxShape.circle, color: Colors.red),
+                            child: Text(
+                              list.length.toString(),
+                              style:
+                                  TextStyle(color: Colors.white, fontSize: 12),
+                            )),
+                      )
+                  ],
+                ),
+              ),
+              title: SizedBox())),
       currentIndex: _currentPage.index,
       onTap: _onPageSelected,
       type: BottomNavigationBarType.fixed,
