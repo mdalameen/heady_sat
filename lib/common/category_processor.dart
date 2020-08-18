@@ -46,17 +46,14 @@ class CategoryProcessor {
     Set<Product> products = Set();
     if (_data != null) {
       for (Category c in _data.categories) {
-        print('iterating cat ${c.id}');
         if ((toSelectCategoryId == null && _selectedCategories.isEmpty) ||
             (toSelectCategoryId == null &&
                 _selectedCategories.contains(c.id)) ||
             (toSelectCategoryId != null && toSelectCategoryId == c.id)) {
-          print('adding all cats of products');
           products.addAll(c.products);
 
           if (c.childCategories.isNotEmpty && _selectedCategories.isNotEmpty)
             for (int category in c.childCategories) {
-              print('having child $category');
               products.addAll(getProducts(category));
             }
         }

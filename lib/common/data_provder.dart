@@ -11,7 +11,6 @@ class DataProvider {
 
   static Future<DataOut<ItemOut>> getAllItems(BuildContext context) async {
     var out = await NetworkHandler.executeRequest(context, _url);
-    print(out.body);
     ItemOut data;
     String errorMessage;
     if (out.isSuccess)

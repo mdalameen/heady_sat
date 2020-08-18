@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:heady_sat/common/app_preferences.dart';
+import 'package:heady_sat/models/items.dart';
 
 class CartItem {
   int productId;
@@ -103,5 +104,28 @@ class Cart extends ChangeNotifier {
 
   reset() {
     items.clear();
+  }
+
+  Future<void> updateData(Map<int, Product> productMap) async {
+    print('triggered updateData');
+    List<CartItem> list = await AppPreferences.getCartItems();
+    List<CartItem> toRemoveItems = List();
+    for (CartItem item in list) {
+      if (productMap.containsKey(item.productId)) {
+        Variant v;
+        for (Variant vv in productMap[item.productId].variants)
+          if (vv.variantId == item.variantId) {
+            v = vv;
+            break;
+          }
+        if (v == null) toRemoveItems.add(item);
+      } else {
+        toRemoveItems.add(item);
+      }
+    }
+    for (CartItem item in toRemoveItems) list.remove(item);
+    AppPreferences.setCartItems(list);
+    items = list;
+    notifyListeners();
   }
 }

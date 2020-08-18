@@ -3,7 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:heady_sat/common/app_preferences.dart';
 import 'package:heady_sat/common/category_processor.dart';
 import 'package:heady_sat/common/data_provder.dart';
+import 'package:heady_sat/models/carts.dart';
 import 'package:heady_sat/models/items.dart';
+import 'package:provider/provider.dart';
 
 import 'data_event.dart';
 import 'data_state.dart';
@@ -25,6 +27,9 @@ class ItemBloc extends Bloc<DataEvent, DataState<ItemOut>> {
       var itemOut = await DataProvider.getAllItems(context);
       if (itemOut.isSuccess) {
         CategoryProcessor().setData(itemOut.data);
+        print('gonna trigger updateData');
+        await Provider.of<Cart>(context, listen: false)
+            .updateData(CategoryProcessor().getProductMap());
         AppPreferences.setCachedItem(itemOut.data);
         yield DataLiveState(itemOut.data);
       } else {
