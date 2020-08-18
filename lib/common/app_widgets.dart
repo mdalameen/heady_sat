@@ -19,7 +19,14 @@ class AppWidget {
         title: Text(title),
       ),
       body: Center(
-        child: Text('Loading'),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          children: [
+            CircularProgressIndicator(),
+            SizedBox(height: 5),
+            Text('Loading! Please wait..,')
+          ],
+        ),
       ),
     );
   }
