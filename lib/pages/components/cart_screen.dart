@@ -46,13 +46,16 @@ class CartScreen extends StatelessWidget {
         AppWidget.getSliverAppBar('Cart'),
         if (displayList.isEmpty)
           SliverFillRemaining(
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.add_shopping_cart, size: 150, color: Colors.grey),
-                SizedBox(height: 10),
-                Text('No items in cart, please add items')
-              ],
+            child: Container(
+              color: Colors.white,
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  Icon(Icons.add_shopping_cart, size: 150, color: Colors.grey),
+                  SizedBox(height: 10),
+                  Text('No items in cart, please add items')
+                ],
+              ),
             ),
           ),
         if (displayList.isNotEmpty)
@@ -61,6 +64,7 @@ class CartScreen extends StatelessWidget {
               if (i == displayList.length)
                 return _buildPriceWidget(subTotal, tax);
               return Container(
+                color: Colors.white,
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -99,6 +103,7 @@ class CartScreen extends StatelessWidget {
       TextStyle style = TextStyle(
           color: isBold ? Colors.black : Colors.grey.shade700, fontSize: 16);
       return Container(
+        color: Colors.white,
         padding: EdgeInsets.symmetric(vertical: 2),
         child: Row(
           children: [

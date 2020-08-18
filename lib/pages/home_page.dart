@@ -12,6 +12,8 @@ import 'package:heady_sat/pages/components/category_screen.dart';
 import 'package:heady_sat/pages/components/ranking_screen.dart';
 import 'package:provider/provider.dart';
 
+import 'components/more_screen.dart';
+
 class HomePage extends StatefulWidget {
   @override
   _HomePageState createState() => _HomePageState();
@@ -66,8 +68,10 @@ class _HomePageState extends State<HomePage> {
       return RankingScreen(data, _keys[index]);
     else if (currentPage == PageType.category)
       return CategoryScreen(data, _keys[index]);
-    else
+    else if (currentPage == PageType.cart)
       return CartScreen(_keys[index]);
+    else
+      return MoreScreen(_keys[index]);
   }
 
   _onPageSelected(int index) {

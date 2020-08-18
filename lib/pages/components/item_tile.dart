@@ -41,6 +41,7 @@ class ItemTile extends StatelessWidget {
       child: Container(
         padding: EdgeInsets.all(10),
         decoration: BoxDecoration(
+            color: Colors.white,
             border: Border(bottom: BorderSide(color: Colors.grey, width: 0.5))),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
