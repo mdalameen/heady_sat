@@ -68,6 +68,20 @@ class Cart extends ChangeNotifier {
     notifyListeners();
   }
 
+  removeProduct(int productId) async {
+    List<CartItem> list = await AppPreferences.getCartItems();
+    List<CartItem> toRemoveList = List();
+    for (CartItem item in list) {
+      if (item.productId == productId) {
+        toRemoveList.add(item);
+      }
+    }
+    for (CartItem item in toRemoveList) list.remove(item);
+    AppPreferences.setCartItems(list);
+    items = list;
+    notifyListeners();
+  }
+
   remove(int productId, int variantId) async {
     print('remove');
     List<CartItem> list = await AppPreferences.getCartItems();

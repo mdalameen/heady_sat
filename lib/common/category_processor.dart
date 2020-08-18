@@ -6,25 +6,31 @@ class CategoryProcessor {
   factory CategoryProcessor() => _instance;
 
   Set<int> _selectedCategories = Set();
+  Map<int, Product> _allProducts = Map();
   ItemOut _data;
 
   void setData(ItemOut data) {
     _selectedCategories.clear();
     this._data = data;
 
-    // Map<int, Product> allProducts = Map();
-    // if (data != null) {
-    //   for (Category c in data.categories) {
-    //     for (Product p in c.products) {
-    //       allProducts[p.id] = p;
-    //     }
-    //   }
+    _allProducts.clear();
+    if (data != null) {
+      for (Category c in data.categories) {
+        for (Product p in c.products) {
+          _allProducts[p.id] = p;
+        }
+      }
+    }
     //   for (Ranking r in data.rankings) {
     //     for (RankingProduct rp in r.rankingProducts) {
     //       // rankingProducts[rp.]
     //     }
     //   }
     // }
+  }
+
+  Map<int, Product> getProductMap() {
+    return _allProducts;
   }
 
   Set<int> getSelectedCategory() {

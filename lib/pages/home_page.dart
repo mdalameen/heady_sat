@@ -6,6 +6,7 @@ import 'package:heady_sat/blocs/item_bloc.dart';
 import 'package:heady_sat/common/app_widgets.dart';
 import 'package:heady_sat/models/carts.dart';
 import 'package:heady_sat/models/items.dart';
+import 'package:heady_sat/pages/components/cart_screen.dart';
 import 'package:heady_sat/pages/components/category_screen.dart';
 import 'package:heady_sat/pages/components/ranking_screen.dart';
 import 'package:provider/provider.dart';
@@ -54,8 +55,10 @@ class _HomePageState extends State<HomePage> {
   _buildCurrentScreen(ItemOut data) {
     if (_currentPage == PageType.ranking)
       return RankingScreen(data);
-    else
+    else if (_currentPage == PageType.category)
       return CategoryScreen(data);
+    else
+      return CartScreen();
   }
 
   _onPageSelected(int index) {

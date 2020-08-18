@@ -19,7 +19,7 @@ class MyApp extends StatelessWidget {
           child: MaterialApp(
             title: 'Heady SAT',
             theme: ThemeData(
-              primarySwatch: Colors.yellow,
+              primarySwatch: Colors.blueGrey,
               primaryColor: Colors.white,
               brightness: Brightness.light,
               visualDensity: VisualDensity.adaptivePlatformDensity,
