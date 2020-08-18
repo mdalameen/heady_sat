@@ -6,7 +6,7 @@ import 'package:heady_sat/pages/components/item_sheet.dart';
 
 class ItemTile extends StatelessWidget {
   final Product product;
-  bool isRightAligned;
+  final bool isRightAligned;
   ItemTile(this.product, [this.isRightAligned = false]);
 
   @override
