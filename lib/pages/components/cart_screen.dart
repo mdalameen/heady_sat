@@ -36,38 +36,50 @@ class CartScreen extends StatelessWidget {
     return CustomScrollView(
       slivers: [
         AppWidget.getSliverAppBar('Cart'),
-        SliverList(
-          delegate: SliverChildBuilderDelegate((_, i) {
-            return Container(
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: [
-                  Container(
-                    padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
-                    child: Row(
-                      children: [
-                        Expanded(
-                            child: Text(
-                          displayList[i].product.name,
-                          style: AppStyle.priceStyle,
-                        )),
-                        IconButton(
-                            icon: Icon(Icons.clear),
-                            onPressed: () => _onClearPressed(
-                                context, displayList[i].product))
-                      ],
+        if (displayList.isEmpty)
+          SliverFillRemaining(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.add_shopping_cart, size: 150, color: Colors.grey),
+                SizedBox(height: 10),
+                Text('No items in cart, please add items')
+              ],
+            ),
+          ),
+        if (displayList.isNotEmpty)
+          SliverList(
+            delegate: SliverChildBuilderDelegate((_, i) {
+              return Container(
+                child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                  children: [
+                    Container(
+                      padding: EdgeInsets.fromLTRB(10, 10, 0, 0),
+                      child: Row(
+                        children: [
+                          Expanded(
+                              child: Text(
+                            displayList[i].product.name,
+                            style: AppStyle.priceStyle,
+                          )),
+                          IconButton(
+                              icon: Icon(Icons.clear),
+                              onPressed: () => _onClearPressed(
+                                  context, displayList[i].product))
+                        ],
+                      ),
                     ),
-                  ),
-                  ...List.generate(
-                      displayList[i].selectedVariants.length,
-                      (index) => VariantView(displayList[i].product,
-                          displayList[i].selectedVariants[index]))
-                ],
-              ),
-            );
-          }, childCount: displayList.length),
-        )
+                    ...List.generate(
+                        displayList[i].selectedVariants.length,
+                        (index) => VariantView(displayList[i].product,
+                            displayList[i].selectedVariants[index]))
+                  ],
+                ),
+              );
+            }, childCount: displayList.length),
+          )
       ],
     );
   }
