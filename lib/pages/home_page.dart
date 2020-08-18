@@ -90,7 +90,6 @@ class _HomePageState extends State<HomePage> {
                       width: 80,
                       child: Column(
                         mainAxisAlignment: MainAxisAlignment.center,
-                        // crossAxisAlignment: CrossAx,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           Icon(icons[index],
@@ -99,7 +98,10 @@ class _HomePageState extends State<HomePage> {
                                   : Colors.grey),
                           Text(
                             labels[index],
-                            style: TextStyle(color: Colors.black),
+                            style: TextStyle(
+                                color: index == _currentPage.index
+                                    ? Colors.black
+                                    : Colors.grey),
                           )
                         ],
                       ),

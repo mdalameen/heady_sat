@@ -6,7 +6,8 @@ import 'package:heady_sat/pages/components/item_sheet.dart';
 
 class ItemTile extends StatelessWidget {
   final Product product;
-  ItemTile(this.product);
+  bool isRightAligned;
+  ItemTile(this.product, [this.isRightAligned = false]);
 
   @override
   Widget build(BuildContext context) {
@@ -82,7 +83,7 @@ class ItemTile extends StatelessWidget {
                       ? ''
                       : ' - ${maxPrice.toStringAsFixed(2)}'),
               style: AppStyle.priceStyle,
-              textAlign: TextAlign.center,
+              textAlign: isRightAligned ? TextAlign.right : TextAlign.center,
             )
           ],
         ),

@@ -22,9 +22,7 @@ class _CategoryScreenState extends State<CategoryScreen> {
   }
 
   _initProducts() async {
-    print('initProducts');
     products.addAll(CategoryProcessor().getProducts());
-    print(products);
     if (mounted) setState(() {});
   }
 

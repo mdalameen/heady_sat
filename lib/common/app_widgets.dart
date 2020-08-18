@@ -7,6 +7,7 @@ class AppWidget {
       primary: true,
       pinned: true,
       floating: true,
+      elevation: 0,
       title: Text(title),
       bottom: bottomWidget,
     );

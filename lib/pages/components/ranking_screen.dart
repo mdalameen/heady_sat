@@ -1,70 +1,89 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_sticky_header/flutter_sticky_header.dart';
+import 'package:heady_sat/common/app_util.dart';
 import 'package:heady_sat/common/app_widgets.dart';
 import 'package:heady_sat/models/items.dart';
+import 'package:heady_sat/pages/components/item_tile.dart';
 
-class RankingScreen extends StatelessWidget {
+class RankingScreen extends StatefulWidget {
   final ItemOut data;
   RankingScreen(this.data);
+
+  @override
+  _RankingScreenState createState() => _RankingScreenState();
+}
+
+class _RankingScreenState extends State<RankingScreen> {
+  Set<Ranking> expandedRankings = Set();
+
   @override
   Widget build(BuildContext context) {
     return CustomScrollView(
       slivers: [
         AppWidget.getSliverAppBar('Ranking'),
-        for (Ranking r in data.rankings) _buildRanking(r)
+        for (Ranking r in widget.data.rankings) _buildRanking(r)
       ],
     );
   }
 
   Widget _buildRanking(Ranking r) {
-    return SliverToBoxAdapter(
-      child: Container(
-        child: Column(
-          children: [
-            Text(r.ranking,
-                style: TextStyle(color: Colors.black, fontSize: 20)),
-            SizedBox(
-              height: 200,
-              child: ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  itemCount: r.rankingProducts.length,
-                  itemBuilder: (_, index) {
-                    RankingProduct rp = r.rankingProducts[index];
-                    return Container(
-                      width: 200,
-                      margin: EdgeInsets.all(10),
-                      padding: EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                          color: Colors.white,
-                          boxShadow: <BoxShadow>[
-                            BoxShadow(
-                              color: Colors.black,
-                            )
-                          ],
-                          borderRadius: BorderRadius.circular(10)),
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Icon(
-                            Icons.bubble_chart,
-                            color: Colors.grey,
-                            size: 100,
-                          ),
-                          Text(rp?.product?.name ?? '-'),
-                          Row(
-                            children: [
-                              Text(rp.countLabel),
-                              Icon(rp.countIcon),
-                              Text(rp.count.toString()),
-                            ],
-                          )
-                        ],
-                      ),
-                    );
-                  }),
-            )
-          ],
-        ),
+    bool isExpanded = expandedRankings.contains(r);
+    return SliverStickyHeader(
+      header: Container(
+        color: Colors.grey.shade100,
+        padding: EdgeInsets.all(10),
+        child: Text(r.ranking,
+            style: TextStyle(color: Colors.black, fontSize: 20)),
       ),
+      sliver: SliverList(
+          delegate: SliverChildBuilderDelegate((_, i) {
+        if ((!isExpanded && i == 5) ||
+            (isExpanded && i == r.rankingProducts.length))
+          return InkWell(
+            onTap: () {
+              if (expandedRankings.contains(r))
+                expandedRankings.remove(r);
+              else
+                expandedRankings.add(r);
+              setState(() {});
+            },
+            child: Container(
+              padding: EdgeInsets.all(10),
+              alignment: Alignment.center,
+              child: Text(
+                isExpanded ? 'See Less' : 'See More',
+                style: TextStyle(color: Colors.blue, fontSize: 18),
+              ),
+            ),
+          );
+        return IntrinsicHeight(
+          child: IntrinsicWidth(
+            child: Stack(
+              children: [
+                ItemTile(r.rankingProducts[i].product, true),
+                Align(
+                  alignment: Alignment.topRight,
+                  child: Container(
+                    alignment: Alignment.bottomLeft,
+                    padding: EdgeInsets.fromLTRB(10, 0, 10, 10),
+                    child: Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(r.rankingProducts[i].countIcon,
+                            size: 20, color: Colors.grey),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(AppUtil.getCountString(r.rankingProducts[i].count))
+                      ],
+                    ),
+                  ),
+                )
+              ],
+            ),
+          ),
+        );
+      }, childCount: (isExpanded ? r.rankingProducts.length : 5) + 1)),
     );
   }
 }
