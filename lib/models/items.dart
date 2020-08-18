@@ -88,7 +88,7 @@ class Product {
   }
 }
 
-class Category {
+class Category implements Comparable<Category> {
   int id;
   String name;
   List<Product> products;
@@ -111,6 +111,7 @@ class Category {
     List<Category> list = List();
     if (dList != null)
       for (Map<String, dynamic> map in dList) list.add(Category.fromJson(map));
+    list.sort();
     return list;
   }
 
@@ -118,6 +119,11 @@ class Category {
     List<Map<String, dynamic>> dList = List();
     if (list != null) for (Category v in list) dList.add(v.toJson());
     return dList;
+  }
+
+  @override
+  int compareTo(Category other) {
+    return id == other.id ? 0 : id > other.id ? 1 : -1;
   }
 }
 

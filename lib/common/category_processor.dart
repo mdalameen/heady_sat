@@ -21,12 +21,6 @@ class CategoryProcessor {
         }
       }
     }
-    //   for (Ranking r in data.rankings) {
-    //     for (RankingProduct rp in r.rankingProducts) {
-    //       // rankingProducts[rp.]
-    //     }
-    //   }
-    // }
   }
 
   Map<int, Product> getProductMap() {
@@ -49,23 +43,25 @@ class CategoryProcessor {
   }
 
   List<Product> getProducts([int toSelectCategoryId]) {
-    List<Product> products = List();
+    Set<Product> products = Set();
     if (_data != null) {
       for (Category c in _data.categories) {
-        if (_selectedCategories.isEmpty ||
-            _selectedCategories.contains(c.id) ||
+        print('iterating cat ${c.id}');
+        if ((toSelectCategoryId == null && _selectedCategories.isEmpty) ||
+            (toSelectCategoryId == null &&
+                _selectedCategories.contains(c.id)) ||
             (toSelectCategoryId != null && toSelectCategoryId == c.id)) {
-          for (Product p in c.products)
-            if (!products.contains(p)) products.add(p);
-          if (toSelectCategoryId != null)
-            break;
-          else if (c.childCategories.isNotEmpty &&
-              _selectedCategories.isNotEmpty)
-            for (int category in c.childCategories)
+          print('adding all cats of products');
+          products.addAll(c.products);
+
+          if (c.childCategories.isNotEmpty && _selectedCategories.isNotEmpty)
+            for (int category in c.childCategories) {
+              print('having child $category');
               products.addAll(getProducts(category));
+            }
         }
       }
     }
-    return products;
+    return products.toList();
   }
 }
